@@ -1,0 +1,19 @@
+{
+  "sections": {
+    "top": {
+      "type": "page__top",
+      "settings": {}
+    },
+    "location": {
+      "type": "page__store_location",
+      "settings": {
+        "btn_text": "לכל סניפי סילי",
+        "btn_link": "shopify:\/\/pages\/stores"
+      }
+    }
+  },
+  "order": [
+    "top",
+    "location"
+  ]
+}

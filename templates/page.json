@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "top": {
+      "type": "page__top",
+      "settings": {}
+    },
+    "main": {
+      "type": "page__main",
+      "settings": {}
+    }
+  },
+  "order": [
+    "top",
+    "main"
+  ]
+}

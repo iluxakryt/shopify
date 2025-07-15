@@ -1,0 +1,24 @@
+{
+  "sections": {
+    "top": {
+      "type": "page__top",
+      "settings": {}
+    },
+    "main": {
+      "type": "blog__main",
+      "settings": {
+        "title": "הבלוג של סילי",
+        "subtitle": "הטיפים של סילי לשינה טובה יותר"
+      }
+    },
+    "subscribe": {
+      "type": "static__subscribe",
+      "settings": {}
+    }
+  },
+  "order": [
+    "top",
+    "main",
+    "subscribe"
+  ]
+}

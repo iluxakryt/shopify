@@ -1,0 +1,228 @@
+<script>
+  window.dlPreparedData = window.dlPreparedData || {};
+  window.dlPreparedData['{{ section.id }}'] = window.dlPreparedData['{{ section.id }}'] || { items: [] };
+</script>
+
+{%- paginate collection.products by section.settings.products_per_page -%}
+  <div
+    data-dl-onview="view_item_list" data-dl-id="{{ section.id }}"
+    class="grid grid-cols-1 px-4 gap-y-6 pb-6 text-center sl-container md:grid-cols-2 md:gap-x-6 lg:grid-cols-3 lg:gap-x-6 lg:gap-y-14 xl:px-0 xl:pb-14"
+  >
+
+    {%- for product in collection.products -%}
+
+      {%- liquid
+        if product.metafields.custom.upsale_product
+          continue
+        endif
+
+        assign couponBannerBlocks = section.blocks | where: 'type', 'banner_coupon' | map: 'settings' | where: 'order', forloop.index
+        assign bannerBlocks = section.blocks | where: 'type', 'banner' | map: 'settings' | where: 'order', forloop.index
+
+        comment
+          Image banner render
+        endcomment
+        for bannerBlock in bannerBlocks
+
+          if bannerBlock.collections != blank
+            assign currentCollectionFound = bannerBlock.collections | where: 'handle', collection.handle
+            if currentCollectionFound == blank
+              continue
+            endif
+          endif
+
+          assign bannerClasses = '-mx-4 sl-anti-container md:mx-0 lg:-mx-4 lg:col-span-3'
+
+          if bannerBlock.hide_on_mobile
+            assign bannerClasses = bannerClasses | append: ' hidden lg:block'
+          endif
+          if bannerBlock.hide_on_desktop
+            assign bannerClasses = bannerClasses | append: ' lg:hidden'
+          endif
+
+          render 'product-grid__banner', image: bannerBlock.image, url: bannerBlock.link, class: bannerClasses
+        endfor
+
+        comment
+          Coupon banners render
+        endcomment
+        for bannerBlock in couponBannerBlocks
+
+          if bannerBlock.collections != blank
+            assign currentCollectionFound = bannerBlock.collections | where: 'handle', collection.handle
+            if currentCollectionFound == blank
+              continue
+            endif
+          endif
+
+          assign bannerClasses = '-mx-4 sl-anti-container md:mx-0 md:flex md:flex-col md:justify-center lg:-mx-4 lg:block lg:col-span-3'
+
+          if bannerBlock.hide_on_mobile
+            assign bannerClasses = bannerClasses | append: ' hidden lg:block'
+          endif
+          if bannerBlock.hide_on_desktop
+            assign bannerClasses = bannerClasses | append: ' lg:hidden'
+          endif
+
+          render 'banner-coupon', class: bannerClasses, heading: bannerBlock.heading, description: bannerBlock.description, coupon_code: bannerBlock.coupon_code, bg_image: bannerBlock.bg_image
+        endfor
+      -%}
+
+      {% comment %}
+        Product card
+      {% endcomment %}
+      {%- render 'product-card', product: product, image_load: 'lazy', index: forloop.index -%}
+
+      <script>
+        window.dlPreparedData['{{ section.id }}'].items.push({
+          item_id: "{{ product.id }}",
+          item_name: "{{ product.title }}",
+          item_category: "{{ product.collections | map: 'title' | join: ', ' }}",
+          item_variant: "{{ product.selected_or_first_available_variant.title }}",
+          price: "{{ product.price | money_without_currency }}",
+          currency: "{{ shop.currency }}",
+          item_list_id: "{{ section.id }}",
+          index: "{{ forloop.index }}",
+          image_url: "{{ product.featured_image.src | img_url: '600x' }}",
+          url: "{{ product.url }}",
+        });
+      </script>
+    {%- endfor -%}
+  </div>
+
+  {% comment %}
+    Pagination
+  {% endcomment %}
+
+  {% render 'pagination', paginate: paginate, class: 'pb-10' %}
+{%- endpaginate -%}
+
+{%- schema -%}
+{
+  "name": "Products grid",
+  "settings": [
+    {
+      "type": "number",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "default": 27
+    }
+  ],
+  "blocks": [
+    {
+      "type": "banner",
+      "name": "Banner",
+      "settings": [
+        {
+          "type": "header",
+          "content": "⚠️⚠️⚠️️"
+        },
+        {
+          "type": "paragraph",
+          "content": "This settings are working only for collections which using this template"
+        },
+        {
+          "type": "header",
+          "content": "⚠️⚠️⚠️️"
+        },
+        {
+          "type": "collection_list",
+          "id": "collections",
+          "label": "Collections to show on",
+          "info": "Use this option to specify collections to show banner on. If no collections selected, banner will be shown on all collections. Remember that banner will be shown only on collections which using this template."
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_on_desktop",
+          "label": "Hide on desktop"
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_on_mobile",
+          "label": "Hide on mobile"
+        },
+        {
+          "type": "number",
+          "id": "order",
+          "label": "Order",
+          "default": 4
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    },
+    {
+      "type": "banner_coupon",
+      "name": "Banner coupon from Home",
+      "settings": [
+        {
+          "type": "header",
+          "content": "⚠️⚠️⚠️️"
+        },
+        {
+          "type": "paragraph",
+          "content": "This settings are working only for collections which using this template"
+        },
+        {
+          "type": "header",
+          "content": "⚠️⚠️⚠️️"
+        },
+        {
+          "type": "collection_list",
+          "id": "collections",
+          "label": "Collections to show on",
+          "info": "Use this option to specify collections to show banner on. If no collections selected, banner will be shown on all collections. Remember that banner will be shown only on collections which using this template."
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_on_desktop",
+          "label": "Hide on desktop"
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_on_mobile",
+          "label": "Hide on mobile"
+        },
+        {
+          "type": "number",
+          "id": "order",
+          "label": "Order",
+          "default": 7
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "33% הנחה"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Description",
+          "default": "חג שמח! מבצע ראש השנה"
+        },
+        {
+          "type": "text",
+          "id": "coupon_code",
+          "label": "Coupon code",
+          "default": "roshhashane"
+        },
+        {
+          "type": "image_picker",
+          "id": "bg_image",
+          "label": "Background image",
+          "info": "Background position is center, no repeat and cover by default"
+        }
+      ]
+    }
+  ]
+}
+{%- endschema -%}

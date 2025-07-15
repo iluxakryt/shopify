@@ -1,0 +1,16 @@
+{
+  "current": {
+    "logo": "shopify:\/\/shop_images\/layer1.svg",
+    "favicon": "shopify:\/\/shop_images\/favicon_32.png",
+    "whatsapp": "055-9596317",
+    "checkout_logo_image": "shopify:\/\/shop_images\/layer1.svg",
+    "checkout_logo_position": "center",
+    "checkout_logo_size": "medium",
+    "checkout_body_background_color": "#ffffff",
+    "checkout_input_background_color_mode": "white",
+    "content_for_index": []
+  },
+  "presets": {
+    "Default": {}
+  }
+}
